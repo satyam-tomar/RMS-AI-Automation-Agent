@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMS - Relationship Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .card-hover {
+            transition: all 0.2s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <!-- Clean Top Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+        <div class="max-w-[1400px] mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <img src="/assets/LPU.jpg" alt="LPU" class="h-11 w-auto rounded-lg">
+                    <div class="hidden sm:block border-l border-gray-200 pl-4">
+                        <div class="text-lg font-bold text-gray-900">RMS Portal</div>
+                        <div class="text-xs text-gray-500">Relationship Management</div>
+                    </div>
+                </div>
+
+                <!-- User Info -->
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:block text-right">
+                        <div class="text-sm font-semibold text-gray-900"><%= studentName %></div>
+                        <div class="text-xs text-gray-500"><%= studentId %></div>
+                    </div>
+
+                    <div class="sm:hidden text-right text-xs">
+                        <div class="font-semibold text-gray-900"><%= studentName %></div>
+                        <div class="text-gray-500 text-[10px]"><%= studentId %></div>
+                    </div>
+
+                    <div class="relative">
+                        <button onclick="toggleMenu()" 
+                            class="p-2 rounded-lg hover:bg-gray-50 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="w-5 h-5 text-gray-600">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                            </svg>
+                        </button>
+
+                        <div id="menuDropdown"
+                            class="hidden absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-1">
+                            <a href="/student/logout"
+                                class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 min-h-screen">
+        <div class="max-w-[1400px] mx-auto px-6 py-8">
+            
+            <!-- Hero Banner (Desktop Only) -->
+            <div class="hidden lg:block mb-8">
+                <div class="relative overflow-hidden rounded-2xl shadow-lg h-[240px]">
+                    <video id="bgVideo" class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
+                        <source src="/assets/video.mp4" type="video/mp4">
+                    </video>
+                    
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-800/70"></div>
+                    
+                    <div class="relative z-10 h-full flex items-center px-10">
+                        <div class="flex items-center gap-5">
+                            <img src="/assets/lpu_logo.png" alt="LPU" class="h-16 w-auto">
+                            <div>
+                                <h1 class="text-3xl font-bold text-white mb-1">Relationship Management System</h1>
+                                <p class="text-lg text-blue-100">Submit and track your requests efficiently</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Header -->
+            <div class="lg:hidden mb-6 bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3">
+                    <img src="/assets/lpu_logo.png" alt="LPU" class="h-12 w-auto">
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-900">RMS Portal</h1>
+                        <p class="text-sm text-gray-500">Track your requests</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- History Sidebar -->
+                <div class="lg:col-span-4">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
+                        
+                        <div class="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-5">
+                            <h2 class="text-lg font-semibold text-white">Request History</h2>
+                            <p class="text-blue-100 text-sm mt-0.5">Your submitted requests</p>
+                        </div>
+
+                        <div class="p-4 max-h-[600px] overflow-y-auto scrollbar-thin">
+                            <% if (complaints.length === 0) { %>
+                                <div class="text-center py-16">
+                                    <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gray-50 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-500">No requests yet</p>
+                                    <p class="text-xs text-gray-400 mt-1">Submit your first request</p>
+                                </div>
+                            <% } else { %>
+                                <div class="space-y-3">
+                                    <% complaints.forEach(c => { %>
+                                        <div class="card-hover cursor-pointer rounded-xl p-4 border-2 transition
+                                            <%= c.status === STATUS.RESOLVED 
+                                                ? 'bg-green-50/50 border-green-200 hover:border-green-300 hover:shadow-sm' 
+                                                : 'bg-amber-50/50 border-amber-200 hover:border-amber-300 hover:shadow-sm' %>"
+                                            onclick="showComplaint('<%= c.id %>')">
+                                            
+                                            <div class="flex items-start justify-between gap-2 mb-2">
+                                                <h3 class="font-semibold text-gray-900 text-sm line-clamp-1 flex-1">
+                                                    <%= c.subject %>
+                                                </h3>
+                                                <span class="text-[10px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap
+                                                    <%= c.status === STATUS.RESOLVED 
+                                                        ? 'bg-green-500 text-white' 
+                                                        : 'bg-amber-500 text-white' %>">
+                                                    <%= c.status %>
+                                                </span>
+                                            </div>
+
+                                            <p class="text-gray-600 text-xs line-clamp-2 leading-relaxed">
+                                                <%= c.complaintText %>
+                                            </p>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Section -->
+                <div class="lg:col-span-8 space-y-6">
+                    
+                    <!-- Submit Form -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        
+                        <div class="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-5">
+                            <h2 class="text-lg font-semibold text-white">Submit New Request</h2>
+                            <p class="text-blue-100 text-sm mt-0.5">Fill out the form below</p>
+                        </div>
+
+                        <form action="/submit-complaint" method="POST" class="p-6 space-y-5">
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                                <input type="text" name="subject" placeholder="Enter request subject"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 
+                                    focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none 
+                                    transition text-sm placeholder:text-gray-400"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea name="complaintText" rows="8" placeholder="Describe your request in detail..."
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 
+                                    focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none 
+                                    transition text-sm placeholder:text-gray-400 resize-none"
+                                    required></textarea>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                                <input type="checkbox" id="agree" name="agree" required
+                                    class="mt-0.5 h-4 w-4 text-blue-600 border-gray-300 rounded 
+                                    focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                                <label for="agree" class="text-sm text-gray-700 cursor-pointer">
+                                    I agree to the <span class="font-semibold text-blue-600">Terms and Conditions</span>
+                                </label>
+                            </div>
+
+                            <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg 
+                                text-sm font-semibold shadow-sm hover:shadow transition-all
+                                flex items-center gap-2">
+                                <span>Submit Request</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Complaint Details -->
+                    <div id="complaintDetails" class="hidden"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("menuDropdown");
+            menu.classList.toggle("hidden");
+        }
+
+        document.addEventListener("click", (e) => {
+            const menu = document.getElementById("menuDropdown");
+            if (!e.target.closest("#menuDropdown") && !e.target.closest("button[onclick='toggleMenu()']")) {
+                menu.classList.add("hidden");
+            }
+        });
+
+        function showComplaint(id) {
+            const detailsContainer = document.getElementById('complaintDetails');
+            
+            const existingDetail = document.getElementById('complaint-' + id);
+            if (existingDetail && !existingDetail.classList.contains('hidden')) {
+                detailsContainer.innerHTML = '';
+                detailsContainer.classList.add('hidden');
+                return;
+            }
+
+            detailsContainer.innerHTML = `
+                <div id="complaint-${id}" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 to-green-500 px-6 py-5">
+                        <h2 class="text-lg font-semibold text-white">Request Details</h2>
+                        <p class="text-green-100 text-sm mt-0.5">Complete information</p>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 text-sm">Request ID: <span class="font-semibold text-gray-900">${id}</span></p>
+                        <p class="text-gray-500 text-sm mt-4">Additional details will appear here as your request is processed.</p>
+                    </div>
+            `;
+            detailsContainer.classList.remove('hidden');
+            
+            if (window.innerWidth < 1024) {
+                setTimeout(() => {
+                    detailsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+
+        const video = document.getElementById("bgVideo");
+        if (video) {
+            video.addEventListener("loadedmetadata", () => {
+                video.currentTime = 2;
+            });
+
+            video.addEventListener("timeupdate", () => {
+                if (video.currentTime >= 10) {
+                    video.currentTime = 2;
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

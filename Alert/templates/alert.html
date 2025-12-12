@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Alert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .alert-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .alert-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .alert-icon {
+            width: 60px;
+            height: 60px;
+            background: #ff4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 32px;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .alert-title {
+            flex: 1;
+        }
+        
+        .alert-title h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .alert-title p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .alert-details {
+            background: #f8f9fa;
+            border-left: 4px solid #ff4444;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        
+        .alert-details h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .alert-details p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .complaints-section h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .complaint-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .complaint-item p {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.5;
+        }
+        
+        .complaint-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .action-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        
+        .action-button:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="alert-container">
+        <div class="alert-header">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-title">
+                <h1>Complaint Surge Detected</h1>
+                <p>Real-time clustering alert triggered</p>
+            </div>
+        </div>
+        
+        <div class="alert-details">
+            <h2>Alert Details</h2>
+            <p><strong>Cluster ID:</strong> {{ cluster_id }}</p>
+            <p><strong>Complaint Count:</strong> {{ complaint_count }} complaints in the last 10 minutes</p>
+            <p><strong>Threshold:</strong> Alert triggered at 3+ similar complaints</p>
+        </div>
+        
+        <div class="complaints-section">
+            <h3>Recent Similar Complaints</h3>
+            {% for complaint in recent_complaints %}
+            <div class="complaint-item">
+                <span class="complaint-number">#{{ loop.index }}</span>
+                <p>{{ complaint }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button class="action-button" onclick="window.location.href='/status'">
+            View System Status
+        </button>
+    </div>
+</body>
+</html>
