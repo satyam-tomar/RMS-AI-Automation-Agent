@@ -38,6 +38,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 const STATUS = { PENDING: "pending", RESOLVED: "resolved" };
 const FLASK_URL = "http://localhost:5000";
 
@@ -94,7 +95,7 @@ app.post("/login", async (req, res) => {
 
 
 app.get("/student", async (req, res) => {
-    const studentComplaints = await Complaint.find({ studentId: req.session.studentId });
+    const studentComplaints = await Complaint.find({ studentId: req.session.studentId }).sort({ createdAt: -1 });
 
         res.render('student', {
             studentName: req.session.studentName,
@@ -107,8 +108,8 @@ app.get("/student", async (req, res) => {
 
 app.get("/teacher", async(req, res) => {
 
-    const pending = await Complaint.find({ status: STATUS.PENDING });
-    const resolved = await Complaint.find({ status: STATUS.RESOLVED });
+    const pending = await Complaint.find({ status: STATUS.PENDING }).sort({ createdAt: -1 });
+    const resolved = await Complaint.find({ status: STATUS.RESOLVED }).sort({ createdAt: -1 });
 
     res.render("teacher", {
         teacherName: req.session.teacherName,
@@ -196,6 +197,36 @@ app.post('/submit-complaint', requireStudentAuth, async (req, res) => {
     res.redirect('/student');
 });
 
+app.delete('/complaints/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const studentId = req.session.studentId;
+
+        if (!studentId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const complaint = await Complaint.findOne({
+            _id: id,
+            studentId,
+            status: 'pending'
+        });
+
+        if (!complaint) {
+            return res.status(404).json({
+                message: 'Complaint not found or cannot be withdrawn'
+            });
+        }
+
+        await Complaint.deleteOne({ _id: id });
+
+        return res.json({ message: 'Complaint withdrawn successfully' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 // --------------------------------------------------
 // TEACHER ACTION

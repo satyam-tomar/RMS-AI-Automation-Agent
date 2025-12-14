@@ -7,7 +7,7 @@ class ClusterManager:
     Supports incremental learning and real-time cluster assignment.
     """
     
-    def __init__(self, n_clusters=5, batch_size=10):
+    def __init__(self, n_clusters=7, batch_size=10):
         """
         Initialize the cluster manager.
         

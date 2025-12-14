@@ -1,5 +1,6 @@
 import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+import pandas as pd
 #why??????
 
 from flask import Flask, request, jsonify, render_template
@@ -14,42 +15,8 @@ app = Flask(__name__)
 cluster_manager = ClusterManager(n_clusters=5)
 alert_manager = AlertManager(window_minutes=10, threshold=3)
 
-SEED_COMPLAINTS = [
-    # College infrastructure
-    "The classroom lights are not working",
-    "Projectors in lecture halls are broken",
-    "Library resources are outdated",
-    "Labs are not well-maintained",
-    "Insufficient seating in lecture halls",
-
-    # Hostel issues
-    "Room cleaning is not done regularly",
-    "Water supply in the hostel is inconsistent",
-    "Mess food quality is poor",
-    "WiFi in hostel rooms is very slow",
-    "Hostel staff is unhelpful",
-
-    # Examination
-    "Exam schedule was not announced on time",
-    "Question papers were leaked",
-    "Grading of answer sheets is unfair",
-    "Exam halls are overcrowded",
-    "Re-evaluation process takes too long",
-
-    # Holidays and events
-    "Holiday notifications are late",
-    "Festivals and events are not organized properly",
-    "No notice about college closure",
-    "Extra classes are scheduled on holidays",
-    "Insufficient break between exams",
-
-    # Mess and cafeteria
-    "Mess menu is repetitive",
-    "Food portions are very small",
-    "Hygiene in the cafeteria is poor",
-    "Water in the mess is not clean",
-    "Mess timings are inconvenient"
-]
+with open("data.txt", "r", encoding="utf-8") as f:
+    SEED_COMPLAINTS = [line.strip() for line in f]
 
 DUMMY_COMPLAINTS = [
     "Room cleaning is not done regularly",
