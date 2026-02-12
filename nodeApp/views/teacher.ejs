@@ -4,173 +4,538 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RMS – Teacher Portal</title>
+    <title>Teacher Portal - Lovely Professional University</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         * {
             font-family: 'Inter', sans-serif;
         }
+        
 
         .card-hover {
-            transition: all .2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .card-hover:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
         .scrollbar-thin::-webkit-scrollbar {
-            width: 4px;
+            width: 6px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
         }
 
         .scrollbar-thin::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 10px;
         }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .status-badge {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .complaint-card {
+            border-left: 4px solid transparent;
+        }
+
+        .complaint-card.pending {
+            border-left-color: #f59e0b;
+        }
+
+        .complaint-card.resolved {
+            border-left-color: #10b981;
+        }
+
+        .detail-section {
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .editable-response {
+            transition: all 0.2s ease;
+        }
+
+        .editable-response[contenteditable="true"] {
+            background: #fffbeb;
+            padding: 12px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
-<body class="min-h-screen bg-[#FBF1F1]">
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
 
     <!-- Top Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-sm">
-        <div class="max-w-[1400px] mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <img src="/assets/LPU.jpg" class="h-11 rounded-lg" />
-                <div class="hidden sm:block border-l pl-4">
-                    <p class="font-bold text-gray-900">RMS – Teacher</p>
-                    <p class="text-xs text-gray-500">Complaint Management</p>
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-4">
+                    <img src="/assets/LPU.jpg" alt="LPU Logo" class="h-10 w-35 rounded-lg shadow-sm" />
+                    <div class="border-l border-slate-200 pl-4">
+                        <h1 class="font-bold text-slate-900 text-sm sm:text-base">Teacher Portal</h1>
+                        <p class="text-xs text-slate-500 hidden sm:block">Lovely Professional University</p>
+                    </div>
                 </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <p class="text-sm font-semibold text-gray-900">
-                        <%= teacherName %>
-                    </p>
-                    <p class="text-xs text-gray-500">
-                        <%= teacherId %>
-                    </p>
-                </div>
-                <div class="relative">
-                    <button onclick="toggleMenu()" class="p-2 rounded-lg hover:bg-gray-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                
+                <div class="flex items-center gap-3">
+                    <!-- Notifications -->
+                    <button class="relative p-2 rounded-lg hover:bg-slate-100 transition">
+                        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                     </button>
-                    <div id="menuDropdown"
-                        class="hidden absolute right-0 mt-2 w-40 bg-white rounded-lg shadow border py-1">
-                        <a href="/teacher/logout"
-                            class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50">Logout</a>
+
+                    <!-- User Menu -->
+                    <div class="flex items-center gap-3 border-l border-slate-200 pl-3">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-semibold text-slate-900"><%= teacherName %></p>
+                            <p class="text-xs text-slate-500"><%= teacherId %></p>
+                        </div>
+                        <div class="relative">
+                            <button onclick="toggleMenu()" class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100 transition">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+                                    <%= (teacherName || "T").charAt(0) %>
+                                </div>
+                                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-200 py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        Profile
+                                    </div>
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        Settings
+                                    </div>
+                                </a>
+                                <hr class="my-2 border-slate-200">
+                                <a href="/teacher/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                        Logout
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="pt-20 max-w-[1400px] mx-auto px-6 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Main Content -->
+    <div class="pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Header Stats -->
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-900 mb-1">Complaint Management</h2>
+                <p class="text-slate-600">Review and respond to student complaints</p>
+            </div>
 
-            <!-- Complaints List -->
-            <div class="lg:col-span-4">
-                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden sticky top-24">
-                    <div class="bg-gradient-to-r from-orange-400 to-orange-500 px-6 py-5">
-                        <h2 class="text-lg font-semibold text-white">All Complaints</h2>
-                        <p class="text-orange-100 text-sm">Pending & resolved</p>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-600">Pending</p>
+                            <p class="text-2xl font-bold text-amber-600 mt-1"><%= pendingComplaints.length %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
                     </div>
-                    <div class="p-4 space-y-3 max-h-[600px] overflow-y-auto scrollbar-thin">
-                        <% pendingComplaints.forEach(c=> { %>
-                            <div onclick="showComplaint('<%= c.id %>')"
-                                class="card-hover cursor-pointer p-4 rounded-xl border bg-amber-50/60">
-                                <p class="text-sm font-semibold text-gray-900 line-clamp-1">
-                                    <%= c.subject %>
-                                </p>
-                                <p class="text-xs text-gray-600 mt-1">
+                </div>
+                
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-600">Resolved</p>
+                            <p class="text-2xl font-bold text-green-600 mt-1"><%= resolvedComplaints.length %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-600">Total</p>
+                            <p class="text-2xl font-bold text-blue-600 mt-1"><%= pendingComplaints.length + resolvedComplaints.length %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+                <!-- Complaints List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <!-- Filter Tabs -->
+                        <div class="border-b border-slate-200 bg-slate-50">
+                            <div class="flex">
+                                <button onclick="filterComplaints('all')" id="tab-all" class="tab-btn flex-1 px-4 py-3 text-sm font-medium text-slate-700 border-b-2 border-blue-600 bg-white">
+                                    All (<%= pendingComplaints.length + resolvedComplaints.length %>)
+                                </button>
+                                <button onclick="filterComplaints('pending')" id="tab-pending" class="tab-btn flex-1 px-4 py-3 text-sm font-medium text-slate-600 border-b-2 border-transparent hover:text-slate-900 hover:bg-slate-50">
+                                    Pending (<%= pendingComplaints.length %>)
+                                </button>
+                                <button onclick="filterComplaints('resolved')" id="tab-resolved" class="tab-btn flex-1 px-4 py-3 text-sm font-medium text-slate-600 border-b-2 border-transparent hover:text-slate-900 hover:bg-slate-50">
+                                    Resolved (<%= resolvedComplaints.length %>)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Complaints List -->
+                        <div class="p-4 space-y-3 max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin">
+                            <% pendingComplaints.forEach(c => { %>
+                            <div onclick="showComplaint(event, '<%= c.id %>')" data-status="pending"
+                                class="complaint-item complaint-card pending card-hover cursor-pointer p-4 rounded-lg bg-white border border-slate-200 hover:border-amber-300 hover:shadow-md transition">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="text-sm font-semibold text-slate-900 line-clamp-1 flex-1">
+                                        <%= c.subject %>
+                                    </h3>
+                                    <span class="status-badge ml-2 px-2 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700 rounded-full">
+                                        PENDING
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-600">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
                                     <%= c.studentName %>
-                                </p>
-                                <span
-                                    class="inline-block mt-2 text-[10px] bg-amber-500 text-white px-2 py-1 rounded-full">Pending</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    2 hours ago
+                                </div>
                             </div>
                             <% }) %>
-                                <% resolvedComplaints.forEach(c=> { %>
-                                    <div onclick="showComplaint('<%= c.id %>')"
-                                        class="card-hover cursor-pointer p-4 rounded-xl border bg-green-50/60">
-                                        <p class="text-sm font-semibold text-gray-900 line-clamp-1">
-                                            <%= c.subject %>
-                                        </p>
-                                        <p class="text-xs text-gray-600 mt-1">
-                                            <%= c.studentName %>
-                                        </p>
-                                        <span
-                                            class="inline-block mt-2 text-[10px] bg-green-500 text-white px-2 py-1 rounded-full">Resolved</span>
-                                    </div>
-                                    <% }) %>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Complaint Details -->
-            <div class="lg:col-span-8">
-                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                    <div class="bg-gradient-to-r from-orange-500 to-orange-400 px-6 py-5">
-                        <h2 class="text-lg font-semibold text-white">Complaint Details</h2>
-                        <p class="text-green-100 text-sm">Review and respond</p>
-                    </div>
-                    <div id="complaint-details" class="hidden p-6 space-y-5">
-                        <p class="text-sm"><span class="font-semibold">Student:</span> <span id="cd-student"></span></p>
-                        <p class="text-sm"><span class="font-semibold">Reg. no.: </span><span id="cd-student-id"></span>
-                        </p>
-                        <p class="text-sm font-semibold">Subject: <span id="cd-subject"></span></p>
-                        <p id="cd-text" class="text-sm text-gray-700 whitespace-pre-line"></p>
-
-                        <div class="bg-gray-50 border rounded-xl p-5">
-                            <div class="flex justify-between">
-                                <p class="text-sm font-semibold mb-2">AI Suggested Response</p>
-                                <button class="text-[10px] font-semibold px-2.5 py-1 rounded-full
-                            bg-orange-500 text-white hover:bg-orange-600 transition">Edit Response</button>
-                            </div>
-                            <p id="cd-ai" class="text-sm text-gray-700 whitespace-pre-line"></p>
-                            <form action="/teacher-action" method="POST" class="mt-4">
-                                <input type="hidden" id="cd-approve-id" name="complaintId" />
-                                <input type="hidden" name="action" value="approve" />
-                                <button
-                                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">Approve
-                                    AI </button>
-                            </form>
-                        </div>
-
-                        <div class="bg-orange-50 border rounded-xl p-5">
-                            <p class="text-sm font-semibold mb-2">Manual Response</p>
-                            <form action="/teacher-action" method="POST">
-                                <input type="hidden" id="cd-manual-id" name="complaintId" />
-                                <input type="hidden" name="action" value="manual" />
-                                <textarea name="manualResponse" rows="5"
-                                    class="w-full border rounded-lg p-3 text-sm"></textarea>
-                                <div class="mt-3 text-right">
-                                    <button
-                                        class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm">Send</button>
+                            <% resolvedComplaints.forEach(c => { %>
+                            <div onclick="showComplaint(event, '<%= c.id %>')" data-status="resolved"
+                                class="complaint-item complaint-card resolved card-hover cursor-pointer p-4 rounded-lg bg-white border border-slate-200 hover:border-green-300 hover:shadow-md transition">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="text-sm font-semibold text-slate-900 line-clamp-1 flex-1">
+                                        <%= c.subject %>
+                                    </h3>
+                                    <span class="status-badge ml-2 px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700 rounded-full">
+                                        RESOLVED
+                                    </span>
                                 </div>
-                            </form>
+                                <div class="flex items-center gap-2 text-xs text-slate-600">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <%= c.studentName %>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    1 day ago
+                                </div>
+                            </div>
+                            <% }) %>
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <!-- Complaint Details -->
+                <div class="lg:col-span-3">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        
+                        <!-- Empty State -->
+                        <div id="empty-state" class="p-12 text-center">
+                            <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2">No Complaint Selected</h3>
+                            <p class="text-sm text-slate-600">Select a complaint from the list to view details and respond</p>
+                        </div>
+
+                        <!-- Complaint Details Content -->
+                        <div id="complaint-details" class="hidden">
+                            <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-5">
+                                <h2 class="text-lg font-semibold text-white">Complaint Details</h2>
+                                <p class="text-blue-100 text-sm">Review and provide response</p>
+                            </div>
+
+                            <div class="p-6 space-y-6 detail-section">
+                                <!-- Student Info Card -->
+                                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-xs font-medium text-slate-500 mb-1">Student Name</p>
+                                            <p class="text-sm font-semibold text-slate-900" id="cd-student"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-medium text-slate-500 mb-1">Registration No.</p>
+                                            <p class="text-sm font-semibold text-slate-900" id="cd-student-id"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Subject -->
+                                <div>
+                                    <p class="text-xs font-medium text-slate-500 mb-2">Subject</p>
+                                    <h3 class="text-base font-semibold text-slate-900" id="cd-subject"></h3>
+                                </div>
+
+                                <!-- Complaint Text -->
+                                <div>
+                                    <p class="text-xs font-medium text-slate-500 mb-2">Complaint Description</p>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <p id="cd-text" class="text-sm text-slate-700 leading-relaxed whitespace-pre-line"></p>
+                                    </div>
+                                </div>
+
+                                <!-- AI Response Section -->
+                                <div class="border-t pt-6">
+                                    <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-5 border border-purple-200">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-semibold text-slate-900">AI-Generated Response</p>
+                                                    <p class="text-xs text-slate-600">Click edit to customize</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="toggleEdit(event)" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                                Edit
+                                            </button>
+                                        </div>
+                                        <p id="cd-ai" class="editable-response text-sm text-slate-700 leading-relaxed whitespace-pre-line"></p>
+                                        
+                                        <form action="/teacher-action" method="POST" class="mt-4" onsubmit="syncAiText()">
+                                            <input type="hidden" id="cd-approve-id" name="complaintId" />
+                                            <input type="hidden" name="action" value="approve" />
+                                            <input type="hidden" id="cd-ai-final" name="aiResponse" />
+                                            <button class="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-sm">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                Approve & Send AI Response
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Manual Response Section -->
+                                <div>
+                                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                                        <div class="flex items-center gap-2 mb-4">
+                                            <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                            <div>
+                                                <p class="text-sm font-semibold text-slate-900">Custom Manual Response</p>
+                                                <p class="text-xs text-slate-600">Write your own personalized response</p>
+                                            </div>
+                                        </div>
+                                        <form action="/teacher-action" method="POST">
+                                            <input type="hidden" id="cd-manual-id" name="complaintId" />
+                                            <input type="hidden" name="action" value="manual" />
+                                            <textarea name="manualResponse" rows="6" placeholder="Type your response here..."
+                                                class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+                                            <div class="mt-3 flex justify-end">
+                                                <button class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-sm">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                    </svg>
+                                                    Send Manual Response
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
     <script>
-        function toggleMenu() { document.getElementById('menuDropdown').classList.toggle('hidden') }
-        const complaints = {
-<% pendingComplaints.concat(resolvedComplaints).forEach(c => { %>
-            "<%= c.id %>": { id: "<%= c.id %>", userId: "<%= c.studentId%>", student: "<%= c.studentName %>", subject: "<%= c.subject %>", text: `<%= c.complaintText %>`, ai: `<%= c.aiDraft %>` },
-<% }) %>
-};
-        function showComplaint(id) { const d = complaints[id]; if (!d) return; document.getElementById('cd-student').textContent = d.student; document.getElementById('cd-subject').textContent = d.subject; document.getElementById('cd-student-id').textContent = d.userId; document.getElementById('cd-text').textContent = d.text; document.getElementById('cd-ai').textContent = d.ai; document.getElementById('cd-approve-id').value = d.id; document.getElementById('cd-manual-id').value = d.id; document.getElementById('complaint-details').classList.remove('hidden'); }
-    </script>
-</body>
+        // Toggle user menu
+        function toggleMenu() {
+            document.getElementById('menuDropdown').classList.toggle('hidden');
+        }
 
+        document.addEventListener('click', function(event) {
+    const menu = document.getElementById('menuDropdown');
+    const toggleBtn = event.target.closest('[onclick="toggleMenu()"]');
+    if (!toggleBtn && !menu.contains(event.target)) {
+        menu.classList.add('hidden');
+    }
+});
+
+
+        // Complaints data
+        const complaints = {
+            <% pendingComplaints.concat(resolvedComplaints).forEach(c => { %>
+            "<%= c.id %>": {
+                id: "<%= c.id %>",
+                userId: "<%= c.studentId %>",
+                student: "<%= c.studentName %>",
+                subject: "<%= c.subject %>",
+                text: <%- JSON.stringify(c.complaintText) %>,
+                ai: <%- JSON.stringify(c.aiDraft) %>,
+            },
+            <% }) %>
+        };
+
+
+function showComplaint(event, id) {
+    event.stopPropagation();
+
+    const complaint = complaints[id];
+    if (!complaint) return;
+
+    // Hide empty state, show details
+    document.getElementById("empty-state").classList.add("hidden");
+    document.getElementById("complaint-details").classList.remove("hidden");
+
+    // Correct IDs
+    document.getElementById("cd-student").textContent = complaint.student;
+    document.getElementById("cd-student-id").textContent = complaint.userId;
+    document.getElementById("cd-subject").textContent = complaint.subject;
+    document.getElementById("cd-text").textContent = complaint.text;
+    document.getElementById("cd-ai").textContent = complaint.ai || "";
+
+    // Set hidden form ids
+    document.getElementById("cd-approve-id").value = complaint.id;
+    document.getElementById("cd-manual-id").value = complaint.id;
+
+    // Highlight selected card
+    document.querySelectorAll(".complaint-card").forEach(card => {
+        card.classList.remove('ring-2', 'ring-blue-500', 'border-blue-500');
+    });
+
+    event.currentTarget.classList.add(
+        'ring-2', 'ring-blue-500', 'border-blue-500'
+    );
+}
+
+
+        // Toggle edit mode for AI response
+        function toggleEdit(event) {
+    const responseElement = document.getElementById("cd-ai");
+    const button = event.currentTarget;
+
+    if (responseElement.isContentEditable) {
+        responseElement.contentEditable = "false";
+        button.textContent = "Edit";
+    } else {
+        responseElement.contentEditable = "true";
+        responseElement.focus();
+        button.textContent = "Save";
+    }
+}
+
+
+        // Sync AI text before form submission
+        function syncAiText() {
+            document.getElementById("cd-ai-final").value = document.getElementById("cd-ai").innerText;
+        }
+
+        // Filter complaints
+        function filterComplaints(filter) {
+            const items = document.querySelectorAll('.complaint-item');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            // Update tabs
+            tabs.forEach(tab => {
+                tab.classList.remove('border-blue-600', 'bg-white', 'text-slate-700');
+                tab.classList.add('border-transparent', 'text-slate-600');
+            });
+
+            const activeTab = document.getElementById(`tab-${filter}`);
+            activeTab.classList.add('border-blue-600', 'bg-white', 'text-slate-700');
+            activeTab.classList.remove('border-transparent', 'text-slate-600');
+
+            // Filter items
+            items.forEach(item => {
+                if (filter === 'all') {
+                    item.style.display = 'block';
+                } else {
+                    const status = item.getAttribute('data-status');
+                    item.style.display = status === filter ? 'block' : 'none';
+                }
+            });
+        }
+    </script>
+
+</body>
 </html>

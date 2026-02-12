@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplaintAI - Global Complaint Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #10b981;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --surface: #334155;
+        }
+
+        * {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #e2e8f0;
+        }
+
+        .glass-dark {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e1b4b 50%, #0c4a6e 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .section-spacing {
+            padding: 100px 0;
+        }
+
+        .highlight {
+            position: relative;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0.2;
+            border-radius: 4px;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body class="gradient-bg">
+
+    <!-- Navigation -->
+    <nav class=" glass-dark py-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-white">Complaint<span class="gradient-text">AI</span></div>
+                        <div class="text-xs text-slate-400">Global Complaint Management</div>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#features" class="text-slate-300 hover:text-white transition">Features</a>
+                    <a href="#how-it-works" class="text-slate-300 hover:text-white transition">How it Works</a>
+                    <a href="#organizations" class="text-slate-300 hover:text-white transition">For Organizations</a>
+                    <a href="#submit" class="text-slate-300 hover:text-white transition">Submit Complaint</a>
+                </div>
+
+                <!-- User Info -->
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-sm font-semibold text-white">
+                            <%= studentName %>
+                        </div>
+                        <div class="text-xs text-slate-400">
+                            ID: <%= studentId %>
+                        </div>
+                    </div>
+
+                    <!-- Profile Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleMenu()"
+                            class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center hover:bg-slate-700 transition">
+                            <i class="fas fa-user text-slate-300"></i>
+                        </button>
+
+                        <div id="menuDropdown"
+                            class="hidden absolute right-0 mt-2 w-48 glass-dark rounded-xl shadow-2xl border border-slate-700 py-2">
+                            <div class="px-4 py-2 border-b border-slate-700">
+                                <div class="text-sm font-medium text-white">
+                                    <%= studentName %>
+                                </div>
+                                <div class="text-xs text-slate-400">Active User</div>
+                            </div>
+                            <a href="/profile"
+                                class="flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+                                <i class="fas fa-user-circle w-4"></i> Profile
+                            </a>
+                            <a href="/settings"
+                                class="flex items-center gap-2 px-4 py-3 text-sm text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+                                <i class="fas fa-cog w-4"></i> Settings
+                            </a>
+                            <div class="border-t border-slate-700 mt-1 pt-1">
+                                <a href="/student/logout"
+                                    class="flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-slate-800/50 hover:text-red-300 transition">
+                                    <i class="fas fa-sign-out-alt w-4"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="mt-[80px] section-spacing pt-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full mb-6">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse-slow"></span>
+                        <span class="text-sm text-slate-300">AI-Powered Complaint Resolution</span>
+                    </div>
+                    <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6">
+                        Transform Your <span class="gradient-text">Complaint</span> Experience
+                    </h1>
+                    <p class="text-xl text-slate-300 mb-8">
+                        A global platform where organizations manage policies and users submit intelligent complaints
+                        through AI-powered RAG models.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#submit" class="btn-primary px-8 py-4 rounded-xl text-white font-semibold">
+                            Submit Complaint <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#how-it-works"
+                            class="px-8 py-4 rounded-xl border border-slate-700 text-slate-300 hover:border-indigo-500 hover:text-white transition">
+                            <i class="fas fa-play-circle mr-2"></i> How it Works
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="relative z-10">
+                        <div class="glass-dark rounded-2xl p-8">
+                            <div
+                                class="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-6 mx-auto">
+                                <img src="https://img.icons8.com/?size=100&id=BL3KLsMipdjo&format=png&color=000000" alt="">
+                            </div>
+                            <h3 class="text-2xl font-bold text-white text-center mb-4">AI Complaint Assistant</h3>
+                            <p class="text-slate-400 text-center mb-6">
+                                Our RAG model analyzes organizational policies to provide intelligent complaint
+                                resolution
+                            </p>
+                            <div class="flex justify-center">
+                                <div class="inline-flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-lg">
+                                    <i class="fas fa-brain text-indigo-400"></i>
+                                    <span class="text-sm">Powered by Advanced AI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Floating elements -->
+                    <div class="absolute -top-6 -right-6 w-24 h-24 bg-purple-500/20 rounded-full blur-xl animate-float">
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-indigo-500/20 rounded-full blur-xl animate-float"
+                        style="animation-delay: 2s;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section-spacing bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full mb-4">
+                    <i class="fas fa-star text-yellow-500"></i>
+                    <span class="text-sm">Why Choose Us</span>
+                </div>
+                <h2 class="text-4xl font-bold text-white mb-4">Powerful <span class="gradient-text">Features</span></h2>
+                <p class="text-xl text-slate-400 max-w-3xl mx-auto">
+                    Comprehensive tools for both organizations and users to streamline complaint management
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="card-hover glass-dark rounded-2xl p-8">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-6">
+                        <i class="fas fa-file-upload text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Policy Management</h3>
+                    <p class="text-slate-400 mb-6">
+                        Organizations upload and manage documentation, enabling AI to understand context and policies
+                        for accurate complaint resolution.
+                    </p>
+                    <div class="inline-flex items-center gap-2 text-indigo-400 font-medium">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="card-hover glass-dark rounded-2xl p-8">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mb-6">
+                        <i class="fas fa-brain text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">AI-Powered Analysis</h3>
+                    <p class="text-slate-400 mb-6">
+                        Advanced RAG models analyze complaints against organizational policies to provide intelligent,
+                        context-aware resolutions.
+                    </p>
+                    <div class="inline-flex items-center gap-2 text-emerald-400 font-medium">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="card-hover glass-dark rounded-2xl p-8">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-6">
+                        <i class="fas fa-history text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Complete History</h3>
+                    <p class="text-slate-400 mb-6">
+                        Track all your complaints in real-time with detailed status updates, resolution timelines, and
+                        communication history.
+                    </p>
+                    <div class="inline-flex items-center gap-2 text-amber-400 font-medium">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section-spacing">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full mb-4">
+                    <i class="fas fa-cogs text-blue-500"></i>
+                    <span class="text-sm">Simple Process</span>
+                </div>
+                <h2 class="text-4xl font-bold text-white mb-4">How It <span class="gradient-text">Works</span></h2>
+                <p class="text-xl text-slate-400 max-w-3xl mx-auto">
+                    A streamlined process from complaint submission to resolution using cutting-edge AI technology
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8 relative">
+                <!-- Connection lines -->
+                <div
+                    class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 transform -translate-y-1/2 z-0">
+                </div>
+
+                <!-- Step 1 -->
+                <div class="relative z-10 text-center">
+                    <div
+                        class="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center mx-auto mb-6">
+                        <div class="w-16 h-16 rounded-xl bg-slate-900 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">1</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Submit Complaint</h3>
+                    <p class="text-slate-400">Describe your issue with relevant details and context</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative z-10 text-center">
+                    <div
+                        class="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-700 flex items-center justify-center mx-auto mb-6">
+                        <div class="w-16 h-16 rounded-xl bg-slate-900 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">2</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">AI Analysis</h3>
+                    <p class="text-slate-400">RAG model analyzes against organizational policies</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative z-10 text-center">
+                    <div
+                        class="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-700 flex items-center justify-center mx-auto mb-6">
+                        <div class="w-16 h-16 rounded-xl bg-slate-900 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">3</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Smart Routing</h3>
+                    <p class="text-slate-400">Complaint routed to appropriate department</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative z-10 text-center">
+                    <div
+                        class="w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-600 to-red-700 flex items-center justify-center mx-auto mb-6">
+                        <div class="w-16 h-16 rounded-xl bg-slate-900 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-white">4</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Resolution</h3>
+                    <p class="text-slate-400">Track resolution with AI-powered updates</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Organizations Section -->
+    <section id="organizations" class="section-spacing bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full mb-6">
+                        <i class="fas fa-building text-cyan-500"></i>
+                        <span class="text-sm">For Organizations</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-white mb-6">
+                        Streamline Your <span class="gradient-text">Complaint</span> Management
+                    </h2>
+                    <p class="text-xl text-slate-300 mb-8">
+                        Upload your policies and documentation. Our AI system automatically understands your
+                        organizational structure and routes complaints intelligently.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center mt-1">
+                                <i class="fas fa-check text-emerald-500 text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">Policy Integration</h4>
+                                <p class="text-slate-400">Upload any policy document format</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center mt-1">
+                                <i class="fas fa-check text-blue-500 text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">Automated Routing</h4>
+                                <p class="text-slate-400">AI routes complaints to correct departments</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center mt-1">
+                                <i class="fas fa-check text-purple-500 text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">Analytics Dashboard</h4>
+                                <p class="text-slate-400">Track complaint patterns and resolution times</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="glass-dark rounded-2xl p-8">
+                        <div
+                            class="aspect-video rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center mb-6">
+                            <div class="text-center">
+                                <i class="fas fa-cloud-upload-alt text-5xl text-slate-600 mb-4"></i>
+                                <p class="text-slate-500">Organization Dashboard Preview</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                                <div class="text-2xl font-bold text-white mb-2">24/7</div>
+                                <div class="text-sm text-slate-400">AI Monitoring</div>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                                <div class="text-2xl font-bold text-white mb-2">99%</div>
+                                <div class="text-sm text-slate-400">Accuracy Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="section-spacing">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full mb-4">
+                    <i class="fas fa-comment-alt text-pink-500"></i>
+                    <span class="text-sm">User Experiences</span>
+                </div>
+                <h2 class="text-4xl font-bold text-white mb-4">What Our <span class="gradient-text">Users</span> Say
+                </h2>
+                <p class="text-xl text-slate-400 max-w-3xl mx-auto">
+                    Hear from organizations and users who have transformed their complaint management process
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="glass-dark rounded-2xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <span class="text-white font-bold">JS</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">John Smith</h4>
+                            <p class="text-sm text-slate-400">Global Tech Corp</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 italic mb-6">
+                        "The AI-powered complaint system reduced our resolution time by 70%. The policy integration is
+                        seamless."
+                    </p>
+                    <div class="flex text-amber-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="glass-dark rounded-2xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                            <span class="text-white font-bold">MR</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Maria Rodriguez</h4>
+                            <p class="text-sm text-slate-400">Healthcare Plus</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 italic mb-6">
+                        "As a user, the transparency and AI assistance made my complaint resolution process incredibly
+                        smooth."
+                    </p>
+                    <div class="flex text-amber-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="glass-dark rounded-2xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                            <span class="text-white font-bold">AK</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Alex Kim</h4>
+                            <p class="text-sm text-slate-400">FinServ Solutions</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 italic mb-6">
+                        "The RAG model's ability to understand complex policies and route complaints correctly is
+                        revolutionary."
+                    </p>
+                    <div class="flex text-amber-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complaint Submission Section -->
+
+        <!-- Complaint Submission Section - Modified for Button Navigation -->
+        <section id="submit" class="section-spacing bg-slate-900/50">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <div class="inline-flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full mb-4">
+                        <i class="fas fa-paper-plane text-green-500"></i>
+                        <span class="text-sm">Ready to Submit</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-white mb-4">Submit Your <span
+                            class="gradient-text">Complaint</span></h2>
+                    <p class="text-xl text-slate-400 max-w-3xl mx-auto">
+                        File a complaint that will be intelligently analyzed against organizational policies
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <!-- Ask Query Card -->
+                    <div class="card-hover glass-dark rounded-2xl p-8 text-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-question-circle text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Ask Query</h3>
+                        <p class="text-slate-400 text-sm mb-6">Get quick answers to your questions</p>
+                        <button onclick="openService('query')"
+                            class="w-full px-4 py-3 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition">
+                            <i class="fas fa-arrow-right mr-2"></i> Ask Now
+                        </button>
+                    </div>
+
+                    <!-- Get Enquiry Card -->
+                    <div class="card-hover glass-dark rounded-2xl p-8 text-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-search text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Get Enquiry</h3>
+                        <p class="text-slate-400 text-sm mb-6">Check status of your existing cases</p>
+                        <button onclick="openService('enquiry')"
+                            class="w-full px-4 py-3 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition">
+                            <i class="fas fa-arrow-right mr-2"></i> Check Status
+                        </button>
+                    </div>
+
+                    <!-- Put Complaint Card -->
+                    <div class="card-hover glass-dark rounded-2xl p-8 text-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-file-alt text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Put Complaint</h3>
+                        <p class="text-slate-400 text-sm mb-6">Submit a new complaint for resolution</p>
+                        <button onclick="openComplaintForm()"
+                            class="w-full px-4 py-3 rounded-xl btn-primary text-white font-semibold">
+                            <i class="fas fa-arrow-right mr-2"></i> Submit Complaint
+                        </button>
+                    </div>
+
+                    <!-- More Services Card -->
+                    <div class="card-hover glass-dark rounded-2xl p-8 text-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-ellipsis-h text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">More Services</h3>
+                        <p class="text-slate-400 text-sm mb-6">Explore additional features and support</p>
+                        <button onclick="openService('more')"
+                            class="w-full px-4 py-3 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 transition">
+                            <i class="fas fa-arrow-right mr-2"></i> Explore
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Complaint History Section (Keep this as is) -->
+                <div class="glass-dark rounded-2xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+                        <h2 class="text-2xl font-bold text-white">
+                            <i class="fas fa-history mr-2"></i> Complaint History
+                        </h2>
+                        <p class="text-indigo-200 text-sm mt-2">Your recent submissions and their status</p>
+                    </div>
+
+                    <div class="p-4 max-h-[400px] overflow-y-auto scrollbar-thin">
+                        <% if (complaints.length===0) { %>
+                            <div class="text-center py-12">
+                                <div
+                                    class="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800/50 flex items-center justify-center">
+                                    <i class="fas fa-inbox text-3xl text-slate-600"></i>
+                                </div>
+                                <p class="text-sm font-medium text-slate-400">No complaints yet</p>
+                                <p class="text-xs text-slate-500 mt-1">Your submitted complaints will appear here</p>
+                                <button onclick="openComplaintForm()"
+                                    class="mt-6 px-6 py-3 rounded-xl btn-primary text-white font-semibold text-sm">
+                                    <i class="fas fa-plus mr-2"></i> Submit Your First Complaint
+                                </button>
+                            </div>
+                            <% } else { %>
+                                <div class="space-y-4">
+                                    <% complaints.forEach(c=> { %>
+                                        <div class="card-hover cursor-pointer rounded-xl p-5 bg-slate-800/30 border border-slate-700 transition
+                                <%= c.status === STATUS.RESOLVED 
+                                    ? 'border-l-4 border-l-emerald-500' 
+                                    : 'border-l-4 border-l-amber-500' %>" onclick="showComplaint('<%= c.id %>')">
+
+                                            <div class="flex items-start justify-between gap-3 mb-3">
+                                                <div class="flex-1 min-w-0">
+                                                    <h3 class="font-semibold text-white text-sm line-clamp-1">
+                                                        <%= c.subject %>
+                                                    </h3>
+                                                    <p class="text-[10px] text-slate-400 mt-1">
+                                                        <%= new Date(c.createdAt).toLocaleString('en-IN', {
+                                                            day: '2-digit' , month: 'short' , year: 'numeric' ,
+                                                            hour: '2-digit' , minute: '2-digit' }) %>
+                                                    </p>
+                                                </div>
+                                                <span class="text-[10px] font-semibold px-3 py-1.5 rounded-full whitespace-nowrap
+                                        <%= c.status === STATUS.RESOLVED 
+                                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/30' %>">
+                                                    <%= c.status %>
+                                                </span>
+                                            </div>
+
+                                            <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed mb-3">
+                                                <%= c.complaintText %>
+                                            </p>
+
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-2 text-xs text-slate-500">
+                                                    <i class="fas fa-clock"></i>
+                                                    <span>ID: <%= c.id.slice(0,8) %>...</span>
+                                                </div>
+                                                <% if (c.status !==STATUS.RESOLVED) { %>
+                                                    <button
+                                                        onclick="event.stopPropagation(); withdrawComplaint('<%= c.id %>')"
+                                                        class="text-[10px] font-semibold px-3 py-1.5 rounded-lg
+                                                bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 transition">
+                                                        Withdraw
+                                                    </button>
+                                                    <% } %>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="submit" class="section-spacing bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-8">
+                    <div class="glass-dark rounded-2xl overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+                            <h2 class="text-2xl font-bold text-white">New Complaint Form</h2>
+                            <p class="text-indigo-200 text-sm mt-2">AI will analyze your complaint against relevant
+                                policies</p>
+                        </div>
+
+                        <form action="/submit-complaint" method="POST" class="p-8 space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-3">
+                                    <i class="fas fa-heading mr-2 text-indigo-400"></i>Subject
+                                </label>
+                                <input type="text" name="subject" placeholder="Enter complaint subject" class="w-full px-5 py-4 bg-slate-800/50 border border-slate-700 rounded-xl text-white 
+                                    focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none 
+                                    transition text-sm placeholder:text-slate-500" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-3">
+                                    <i class="fas fa-align-left mr-2 text-indigo-400"></i>Detailed Description
+                                </label>
+                                <textarea name="complaintText" rows="8"
+                                    placeholder="Describe your complaint in detail. Be specific for better AI analysis..."
+                                    class="w-full px-5 py-4 bg-slate-800/50 border border-slate-700 rounded-xl text-white 
+                                    focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none 
+                                    transition text-sm placeholder:text-slate-500 resize-none" required></textarea>
+                                <p class="text-xs text-slate-500 mt-2">
+                                    <i class="fas fa-lightbulb mr-1"></i> Include specific details, dates, and policy
+                                    references if known
+                                </p>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-5 bg-slate-800/30 rounded-xl border border-slate-700">
+                                <input type="checkbox" id="agree" name="agree" required class="mt-1 h-5 w-5 text-indigo-500 bg-slate-800 border-slate-600 rounded 
+                                    focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                                <label for="agree" class="text-sm text-slate-300 cursor-pointer">
+                                    I agree that my complaint will be analyzed by AI against organizational policies and
+                                    <span class="font-semibold text-indigo-400">Terms of Service</span>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <button type="submit" class="btn-primary px-8 py-4 rounded-xl text-white font-semibold
+                                    flex items-center gap-3">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>Submit Complaint</span>
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Complaint Details (Hidden by default) -->
+                    <div id="complaintDetails" class="hidden mt-8"></div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-xl font-bold text-white">Complaint<span class="gradient-text">AI</span>
+                            </div>
+                            <div class="text-xs text-slate-400">Global Platform</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        AI-powered complaint management system for organizations worldwide.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-slate-400 hover:text-white transition text-sm">Home</a></li>
+                        <li><a href="#features" class="text-slate-400 hover:text-white transition text-sm">Features</a>
+                        </li>
+                        <li><a href="#how-it-works" class="text-slate-400 hover:text-white transition text-sm">How it
+                                Works</a></li>
+                        <li><a href="#organizations" class="text-slate-400 hover:text-white transition text-sm">For
+                                Organizations</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition text-sm">Privacy Policy</a>
+                        </li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition text-sm">Terms of Service</a>
+                        </li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition text-sm">Cookie Policy</a>
+                        </li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition text-sm">GDPR Compliance</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Contact</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-2 text-slate-400 text-sm">
+                            <i class="fas fa-envelope w-4"></i>
+                            <span>support@complaintai.com</span>
+                        </li>
+                        <li class="flex items-center gap-2 text-slate-400 text-sm">
+                            <i class="fas fa-phone w-4"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center gap-2 text-slate-400 text-sm">
+                            <i class="fas fa-map-marker-alt w-4"></i>
+                            <span>Global Headquarters</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 mt-12 pt-8 text-center">
+                <p class="text-slate-500 text-sm">
+                    &copy; 2024 ComplaintAI. All rights reserved. |
+                    <span class="text-indigo-400">AI-Powered Complaint Management System</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop"
+        class="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all opacity-0 invisible">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Initialize ScrollReveal
+        ScrollReveal().reveal('.card-hover, h1, h2, h3, p', {
+            delay: 200,
+            distance: '30px',
+            origin: 'bottom',
+            opacity: 0,
+            interval: 100,
+            duration: 1000,
+            reset: false
+        });
+
+        // Menu toggle function
+        function toggleMenu() {
+            const menu = document.getElementById("menuDropdown");
+            menu.classList.toggle("hidden");
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener("click", (e) => {
+            const menu = document.getElementById("menuDropdown");
+            if (!e.target.closest("#menuDropdown") && !e.target.closest("button[onclick='toggleMenu()']")) {
+                menu.classList.add("hidden");
+            }
+        });
+
+        // Withdraw complaint function
+        function withdrawComplaint(id) {
+            if (!confirm('Are you sure you want to withdraw this complaint?')) return;
+
+            fetch(`/complaints/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Failed to withdraw complaint');
+                });
+        }
+
+        // Show complaint details
+        function showComplaint(id) {
+            const detailsContainer = document.getElementById('complaintDetails');
+
+            const existingDetail = document.getElementById('complaint-' + id);
+            if (existingDetail && !existingDetail.classList.contains('hidden')) {
+                detailsContainer.innerHTML = '';
+                detailsContainer.classList.add('hidden');
+                return;
+            }
+
+            detailsContainer.innerHTML = `
+                <div id="complaint-${id}" class="glass-dark rounded-2xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-emerald-600 to-teal-500 px-8 py-6">
+                        <h2 class="text-xl font-bold text-white">Complaint Details</h2>
+                        <p class="text-emerald-100 text-sm mt-1">Complete information and AI analysis</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-slate-800/30 rounded-xl p-5">
+                                <h4 class="text-sm font-semibold text-slate-300 mb-2">Complaint ID</h4>
+                                <p class="text-white font-mono">${id}</p>
+                            </div>
+                            <div class="bg-slate-800/30 rounded-xl p-5">
+                                <h4 class="text-sm font-semibold text-slate-300 mb-2">AI Analysis Status</h4>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                                    <span class="text-emerald-400 text-sm">Processing Policies</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm">
+                            Additional details, AI analysis results, and resolution progress will appear here as your complaint is processed.
+                        </p>
+                    </div>
+                </div>
+            `;
+            detailsContainer.classList.remove('hidden');
+            detailsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Back to top button
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Add active class to navigation links on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-white');
+                link.classList.add('text-slate-300');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.remove('text-slate-300');
+                    link.classList.add('text-white');
+                }
+            });
+        });
+
+        // Form submission animation
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                submitBtn.disabled = true;
+
+                // The form will submit normally, backend will handle it
+            });
+        }
+    </script>
+
+</body>
+
+</html>

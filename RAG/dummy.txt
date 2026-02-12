@@ -1,0 +1,136 @@
+1. Configuration layer
+    What goes here:
+    API keys (env variable names only)
+    LLM model name (gemini-2.5-pro)
+    embedding model (all-MiniLM-L6-v2)
+    chunk size, overlap
+    document paths, chroma paths
+    This is where GenAI projects stay flexible.
+
+2. Core source code (all intelligence lives here)
+    How your current code maps:
+    LocalEmbedding → embeddings/local_embedding.py
+    UniversityComplaintAgent → agents/university_complaint_agent.py
+    RAG setup → rag/
+    Excel logic → storage/excel_logger.py
+    Gemini init → llms/gemini_client.
+    Flask endpoint → api/routes.py
+    This separation is exactly how real GenAI systems are built.
+
+3. Data layer (never mix with code)
+    LlamaIndex reads from documents/
+    Chroma persists in vector_store/
+    Excel output stays isolated
+
+4. Prompt engineering (very important for learning)
+    This is where you experiment with RAG quality without touching code.    
+
+5. Examples & experiments (learning zone)
+    You will use these while learning LlamaIndex internals.
+
+6. Notebooks (thinking & debugging)
+    Perfect for understanding:
+    retrieval quality
+    chunking effects
+    embedding distance
+
+7. Application entrypoint (clean & thin)
+    This file only:
+    loads config
+    creates agent
+    registers Flask routes
+    No business logic here.
+
+8. Environment & packaging
+
+
+
+
+university_complaint_genai/
+│
+├── app.py
+├── .env
+├── requirements.txt
+├── Dockerfile
+├── setup.py
+├── README.md
+│
+├── config/
+│   ├── __init__.py
+│   ├── app_config.yaml
+│   ├── model_config.yaml
+│   ├── logging_config.yaml
+│   └── paths.yaml
+│
+├── src/
+│   ├── __init__.py
+│
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   └── university_complaint_agent.py
+│
+│   ├── rag/
+│   │   ├── __init__.py
+│   │   ├── document_loader.py
+│   │   ├── index_builder.py
+│   │   └── query_engine.py
+│
+│   ├── embeddings/
+│   │   ├── __init__.py
+│   │   └── local_embedding.py
+│
+│   ├── llms/
+│   │   ├── __init__.py
+│   │   └── gemini_client.py
+│
+│   ├── storage/
+│   │   ├── __init__.py
+│   │   ├── chroma_store.py
+│   │   └── excel_logger.py
+│
+│   ├── prompt_engineering/
+│   │   ├── __init__.py
+│   │   ├── system_prompt.txt
+│   │   ├── complaint_resolution_prompt.txt
+│   │   └── fallback_prompt.txt
+│
+│   ├── handlers/
+│   │   ├── __init__.py
+│   │   └── error_handler.py
+│
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── logger.py
+│   │   └── validators.py
+│
+│   └── main.py
+│
+├── data/
+│   ├── documents/
+│   │   └── university_rules/
+│   │       ├── attendance.txt
+│   │       ├── exams.md
+│   │       └── discipline.pdf
+│   │
+│   ├── vector_store/
+│   │   └── chroma_db/
+│   │
+│   ├── outputs/
+│   │   └── complaints.xlsx
+│   │
+│   └── logs/
+│       └── app.log
+│
+├── examples/
+│   ├── basic_rag_test.py
+│   ├── embedding_test.py
+│   └── complaint_flow_demo.py
+│
+└── notebooks/
+    ├── llamaindex_rag_exploration.ipynb
+    ├── embedding_similarity_analysis.ipynb
+    └── prompt_testing.ipynb

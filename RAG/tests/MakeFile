@@ -1,0 +1,37 @@
+# Makefile
+
+.PHONY: help install setup run test clean docker-build docker-run
+
+help:
+	@echo "Available commands:"
+	@echo "  make install       - Install dependencies"
+	@echo "  make setup         - First-time setup (creates dirs, builds index)"
+	@echo "  make run           - Run Flask application"
+	@echo "  make test          - Run test complaints"
+	@echo "  make clean         - Clean generated files"
+	@echo "  make docker-build  - Build Docker image"
+	@echo "  make docker-run    - Run with Docker Compose"
+
+install:
+	pip install -r requirements.txt
+
+setup:
+	python src/main.py
+
+run:
+	python app.py
+
+test:
+	python src/main.py
+
+clean:
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	rm -rf data/vector_store/chroma_db/*
+	rm -f data/complaints.xlsx
+
+docker-build:
+	docker build -t complaint-agent .
+
+docker-run:
+	docker-compose up -d

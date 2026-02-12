@@ -75,7 +75,7 @@ app.post("/login", async (req, res) => {
         req.session.studentName = student.name;
         req.session.studentEmail = student.email;
 
-        res.redirect('/student');
+        res.redirect('/');
         
     } else {
         const { user_id, password } = req.body;
@@ -106,7 +106,7 @@ app.get("/student", async (req, res) => {
         });
 });
 
-app.get("/teacher", async(req, res) => {
+app.get("/teacher", requireTeacherAuth, async(req, res) => {
 
     const pending = await Complaint.find({ status: STATUS.PENDING }).sort({ createdAt: -1 });
     const resolved = await Complaint.find({ status: STATUS.RESOLVED }).sort({ createdAt: -1 });
@@ -139,8 +139,9 @@ app.get('/student/logout', (req, res) => {
 // });
 
 app.get('/teacher/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/teacher/login');
+    req.session.destroy(() => {
+        res.redirect('/login');
+    });
 });
 
 

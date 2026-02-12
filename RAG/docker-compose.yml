@@ -1,0 +1,18 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  complaint-agent:
+    build: .
+    container_name: university_complaint_agent
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL}
+    restart: unless-stopped

@@ -1,29 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RMS - Relationship Management System</title>
+
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
 
-<body class="min-h-screen text-gray-800 relative bg-orange-400">
+<body class="min-h-screen bg-[#6fa3cf]">
 
-    <!-- Top Bar -->
-    <div class="h-[64px] w-full bg-white backdrop-blur-md shadow-md flex justify-between items-center px-6 border-b border-gray-200 relative z-20">
-        <div class="flex items-center gap-3">
-            <img src="/assets/LPU.jpg" alt="LPU Logo" class="h-12 w-auto object-contain rounded-lg shadow-sm">
+    <!-- Top Header -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+            
+            <!-- Logo + Title -->
+            <div class="flex items-center gap-4">
+                <img src="/assets/LPU.jpg" alt="LPU Logo" class="h-16 w-auto rounded-[1rem]" style="margin-right: 250px;">
+                <div>
+                    <div class="text-2xl font-bold text-gray-800">
+                        Relationship Management System <span class="text-orange-500">(RMS)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Link -->
+            <a href="#" class="text-sm font-medium text-gray-600 hover:text-orange-500">
+                UMS Home
+            </a>
         </div>
-    </div>
+    </nav>
 
-    <!-- Page Layout -->
-    
+    <!-- Main Section -->
+    <section class="flex items-center justify-center py-20">
+        <div class="bg-[#eef4fa] w-[1000px] rounded-[2rem] shadow-md p-10">
+
+            <!-- Tabs -->
+            <div class="flex justify-center mb-8 mt-[-70px]">
+                <div class="bg-white rounded-[2rem] shadow flex overflow-hidden h-[80px]">
+                    <button class="px-8 py-4 text-orange-500 text-xl font-semibold border-r flex items-center gap-2">
+                        <span><i class="fa-regular fa-message"></i></span> Log Request
+                    </button>
+                    <button class="px-8 py-4 text-gray-600 text-xl font-semibold flex items-center gap-2">
+                        <span></span> RMS History
+                    </button>
+                </div>
+            </div>
+
+            <!-- Terms -->
+            <ul class="space-y-4 text-gray-800 font-medium text-[15px]">
+                <li class="flex gap-3 bg-white rounded-2xl p-2">
+                    <span class="text-orange-500">✔</span>
+                    I have not shared my UMS password with anyone.
+                </li>
+                <li class="flex gap-3 bg-white rounded-2xl p-2">
+                    <span class="text-orange-500">✔</span>
+                    I am responsible for the content typed in query.
+                </li>
+                <li class="flex gap-3 bg-white rounded-2xl p-2">
+                    <span class="text-orange-500">✔</span>
+                    I understand that necessary disciplinary action can be initiated against me in case of use of
+                    derogatory words or false statements against any Student/Faculty/Staff/Higher Authority.
+                </li>
+                <li class="flex gap-3 bg-white rounded-2xl p-2">
+                    <span class="text-orange-500">✔</span>
+                    The information given by me regarding the complaint/request is true to the best of my knowledge
+                    and if found false/wrong, necessary disciplinary action can be initiated against me.
+                </li>
+                <li class="flex gap-3 bg-white rounded-2xl p-2">
+                    <span class="text-orange-500">✔</span>
+                    I have read the policy / UMS Notification related to the concerned matter already before
+                    submitting the RMS and I am unable to find the answer related to my query.
+                </li>
+            </ul>
+
+            <!-- Button -->
+            <div class="flex justify-center mt-10">
+                <button
+                    class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-[2rem] transition" onclick="redirectToUrl()"> 
+                    Agree & Proceed
+                </button>
+            </div>
+
+        </div>
+    </section>
 
     <script>
         
+        function redirectToUrl() {
+            window.location.href = "/student";
+        }
+
     </script>
 
 </body>
-
 </html>
