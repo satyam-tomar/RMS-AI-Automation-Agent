@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const http = require('http');
 const path = require('path');
@@ -10,7 +11,9 @@ const { initWebSocket } = require("./services/socketService");
 const userRouter = require("./routes/user");
 const complaintRouter = require("./routes/complaint");
 
-// ✅ Catch any unhandled crash and log it clearly instead of silently dying
+// -------------------------------
+// GLOBAL ERROR SAFETY
+// -------------------------------
 process.on('uncaughtException', (err) => {
     console.error('UNCAUGHT EXCEPTION:', err.message);
     console.error(err.stack);
@@ -20,59 +23,88 @@ process.on('unhandledRejection', (reason) => {
     console.error('UNHANDLED REJECTION:', reason);
 });
 
+// -------------------------------
+// APP INIT
+// -------------------------------
 const app = express();
 const server = http.createServer(app);
 
+// -------------------------------
+// WEBSOCKET INIT
+// -------------------------------
 initWebSocket(server);
 
+// -------------------------------
+// DB CONNECTION
+// -------------------------------
 mongoose.connect(process.env.MONGODB_URL)
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log(err));
 
+// -------------------------------
+// MIDDLEWARE
+// -------------------------------
+app.set('trust proxy', 1); // required for Render
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(session({
     secret: 'complaint-system-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,          // required on Render (HTTPS)
+        sameSite: "lax",       // best for same-origin apps
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
+// -------------------------------
+// VIEW ENGINE
+// -------------------------------
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// -------------------------------
+// ROUTES
+// -------------------------------
 app.get('/', (req, res) => {
     res.render('home');
 });
 
 app.get('/b', (req, res) => {
-    res.render('best_ui')
-})
+    res.render('best_ui');
+});
 
 app.use("/", userRouter);
 app.use("/", complaintRouter);
 
-// ✅ Global error handler — always passes statusCode
+// -------------------------------
+// ERROR HANDLER
+// -------------------------------
 app.use((err, req, res, next) => {
-    if (res.headersSent) {
-        return next(err);
-    }
+    if (res.headersSent) return next(err);
+
     const statusCode = err.statusCode || 500;
     const message = err.message || "Something went wrong";
+
     console.error(`[ERROR ${statusCode}]:`, message);
     res.status(statusCode).render("error", { statusCode, message });
 });
 
+// -------------------------------
+// SERVER START
+// -------------------------------
 async function startServer() {
     try {
         if (process.env.REDIS_URL) {
             await client.connect();
             console.log("Redis Connected");
+        } else {
+            console.log("Redis not configured, skipping...");
         }
 
         const PORT = process.env.PORT || 3000;
@@ -90,7 +122,6 @@ async function startServer() {
 }
 
 startServer();
-
 
 
 
