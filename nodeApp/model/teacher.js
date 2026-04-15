@@ -44,7 +44,6 @@ const teacherSchema = new mongoose.Schema({
             'Mess Management',
             'Maintenance & Facilities',
 
-            // Administrative
             'Examination Cell',
             'Student Affairs',
             'Admissions',

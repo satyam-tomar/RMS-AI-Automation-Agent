@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -7,7 +8,8 @@ const Teacher = require('../model/teacher');
 const Complaint = require('../model/complaints');
 
 // DB Connect
-mongoose.connect('mongodb://127.0.0.1:27017/complaint_system')
+console.log(process.env.MONGODB_URL)
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log("MongoDB connection error:", err));
 
@@ -59,32 +61,32 @@ async function seed() {
         ]);
 
         // Seed Complaints
-        const complaints = await Complaint.insertMany([
-            {
-                studentId: students[0].user_id,
-                studentName: students[0].name,
-                email: students[0].email,
-                subject: "WiFi not working",
-                complaintText: "The WiFi in BH6 Block A floor 7 is not working.",
-                aiDraft: "The WiFi appears to be malfunctioning in the BH6 hostel, kindly resolve the issue.",
-                teacherResponse: null,
-                finalResponse: null,
-                status: "pending",
-                history: [{ action: "submitted", content: "WiFi complaint submitted." }]
-            },
-            {
-                studentId: students[1].user_id,
-                studentName: students[1].name,
-                email: students[1].email,
-                subject: "Mess food quality issue",
-                complaintText: "The dinner quality in Mess2 has been poor for the last few days.",
-                aiDraft: "There seems to be a decline in the food quality in Mess2, please look into it.",
-                teacherResponse: null,
-                finalResponse: null,
-                status: "pending",
-                history: [{ action: "submitted", content: "Mess food complaint submitted." }]
-            }
-        ]);
+        // const complaints = await Complaint.insertMany([
+        //     {
+        //         studentId: students[0].user_id,
+        //         studentName: students[0].name,
+        //         email: students[0].email,
+        //         subject: "WiFi not working",
+        //         complaintText: "The WiFi in BH6 Block A floor 7 is not working.",
+        //         aiDraft: "The WiFi appears to be malfunctioning in the BH6 hostel, kindly resolve the issue.",
+        //         teacherResponse: null,
+        //         finalResponse: null,
+        //         status: "pending",
+        //         history: [{ action: "submitted", content: "WiFi complaint submitted." }]
+        //     },
+        //     {
+        //         studentId: students[1].user_id,
+        //         studentName: students[1].name,
+        //         email: students[1].email,
+        //         subject: "Mess food quality issue",
+        //         complaintText: "The dinner quality in Mess2 has been poor for the last few days.",
+        //         aiDraft: "There seems to be a decline in the food quality in Mess2, please look into it.",
+        //         teacherResponse: null,
+        //         finalResponse: null,
+        //         status: "pending",
+        //         history: [{ action: "submitted", content: "Mess food complaint submitted." }]
+        //     }
+        // ]);
 
         console.log("Seeding completed successfully!");
     } catch (err) {
