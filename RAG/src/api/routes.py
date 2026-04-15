@@ -34,16 +34,22 @@ signal.signal(signal.SIGTERM, handle_shutdown)
 # ─── Redis Connection ──────────────────────────────────────────────────────────
 def connect_redis():
     try:
-        r = Redis(
-            host=os.getenv("REDIS_HOST", "127.0.0.1"),
-            port=int(os.getenv("REDIS_PORT", 6379)),
-            password=os.getenv("REDIS_PASSWORD") or None,
+        redis_url = os.getenv("REDIS_URL")
+
+        if not redis_url:
+            # fallback for local dev
+            redis_url = "redis://127.0.0.1:6379"
+
+        r = Redis.from_url(
+            redis_url,
             decode_responses=True,
             socket_connect_timeout=5
         )
+
         r.ping()
         print("✅ Connected to Redis")
         return r
+
     except Exception as e:
         print(f"❌ Redis connection failed: {e}")
         sys.exit(1)
