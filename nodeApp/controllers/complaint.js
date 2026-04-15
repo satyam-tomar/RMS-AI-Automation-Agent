@@ -7,6 +7,7 @@ const STATUS = { PENDING: "pending", RESOLVED: "resolved" };
 
 module.exports.submitComplaint = async (req, res) => {
     const { subject, complaintText } = req.body;
+
     if (!subject || !complaintText) {
         throw new ExpressError(400, "Incomplete Complaint");
     }
@@ -18,9 +19,6 @@ module.exports.submitComplaint = async (req, res) => {
         subject,
         complaintText,
         status: STATUS.PENDING,
-        aiDraft: null,
-        finalResponse: null,
-        teacherResponse: null,
         createdAt: new Date(),
         history: []
     });
@@ -28,9 +26,18 @@ module.exports.submitComplaint = async (req, res) => {
     await complaint.save();
 
     try {
-        await client.lPush('task_queue', JSON.stringify(complaint));
+        if (client.isOpen) {
+            await client.lPush('task_queue', JSON.stringify({
+                _id: complaint._id,
+                subject,
+                complaintText
+            }));
+            console.log("Queued to Redis");
+        } else {
+            console.log("Redis not connected, skipping queue");
+        }
     } catch (e) {
-        throw new ExpressError(500, "Queueing failed, please try again.");
+        console.error("Redis push failed:", e);
     }
 
     return res.status(200).json({
