@@ -70,13 +70,22 @@ app.use((err, req, res, next) => {
 
 async function startServer() {
     try {
-        await client.connect();
-        console.log("Redis Connected");
-        server.listen(3000, () => {
-            console.log("Server running on http://localhost:3000");
+        if (process.env.REDIS_URL) {
+            await client.connect();
+            console.log("Redis Connected");
+        }
+
+        const PORT = process.env.PORT || 3000;
+
+        server.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
         });
+
     } catch (err) {
-        console.error("Failed to connect to Redis", err);
+        console.error("Startup error:", err);
+
+        const PORT = process.env.PORT || 3000;
+        server.listen(PORT);
     }
 }
 
